@@ -9,7 +9,7 @@ export default function Header() {
   const [password, setPassword] = useState('');
 
   const handleLogin = () => {
-    console.log({ email, password }); // 🔥 replace with real auth later
+    console.log({ email, password });
     setMenuOpen(false);
   };
 
