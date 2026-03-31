@@ -1,9 +1,9 @@
 import { Text, View } from 'react-native';
 
-export default function Services() {
+export default function Contact() {
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Services Page</Text>
+      <Text>Contact Page</Text>
     </View>
   );
 }

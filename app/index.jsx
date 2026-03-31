@@ -1,29 +1,43 @@
-import { Link } from 'expo-router';
-import { StyleSheet } from 'react-native';
+// app/index.jsx
+import { useRouter } from 'expo-router';
+import { useEffect } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
+export default function SplashScreen() {
+  const router = useRouter();
 
-export default function ModalScreen() {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      router.replace('/home');
+    }, 2500);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
-    <ThemedView style={styles.container}>
-      <ThemedText type="title">This is a modal</ThemedText>
-      <Link href="/" dismissTo style={styles.link}>
-        <ThemedText type="link">Go to home screen</ThemedText>
-      </Link>
-    </ThemedView>
+    <View style={styles.container}>
+      <Text style={styles.title}>Welcome to Salon App</Text>
+      <Text style={styles.subtitle}>Manage your salon services easily</Text>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
   },
-  link: {
-    marginTop: 15,
-    paddingVertical: 15,
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  subtitle: {
+    fontSize: 18,
+    textAlign: 'center',
+    color: '#555',
   },
 });
