@@ -1,43 +1,25 @@
-// app/index.jsx
 import { useRouter } from 'expo-router';
-import { useEffect } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { useContext, useEffect } from 'react';
+import { Text, View } from 'react-native';
+import { AuthContext } from '../context/AuthContext';
 
-export default function SplashScreen() {
+export default function Index() {
   const router = useRouter();
+  const { user } = useContext(AuthContext);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      router.replace('/home');
-    }, 2500);
-
-    return () => clearTimeout(timer);
+    setTimeout(() => {
+      if (user) {
+        router.replace('/(tabs)');
+      } else {
+        router.replace('/auth');
+      }
+    }, 2000);
   }, []);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Welcome to Salon App</Text>
-      <Text style={styles.subtitle}>Manage your salon services easily</Text>
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text>Welcome to Salon App</Text>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  subtitle: {
-    fontSize: 18,
-    textAlign: 'center',
-    color: '#555',
-  },
-});
