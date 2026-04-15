@@ -36,7 +36,7 @@ export const AuthProvider = ({ children }) => {
       const userData = { emailOrPhone };
 
       setUser(userData);
-      await AsyncStorage.setItem('user', JSON.stringify(userData)); // SAVE
+      await AsyncStorage.setItem('user', JSON.stringify(userData));
 
       return true;
     }
