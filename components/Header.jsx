@@ -11,21 +11,30 @@ export default function Header() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = () => {
-    const success = login(email, password);
+  const handleLogin = async () => {
+  try {
+    const user = await login(email, password);
 
-    if (success) {
-      setMenuOpen(false);
-      router.replace('/(tabs)/home');
+    setMenuOpen(false);
+
+    // ✅ ROLE-BASED REDIRECT
+    if (user.role === "owner") {
+      router.replace("/(owner)/dashboard");
+    } else if (user.role === "manager") {
+      router.replace("/(manager)/dashboard");
     } else {
-      Alert.alert('Login Failed', 'Invalid credentials');
+      router.replace("/(employee)/dashboard");
     }
-  };
+
+  } catch (err) {
+    Alert.alert("Login Failed", "Invalid credentials");
+  }
+};
 
   const handleLogout = () => {
     logout();
     setMenuOpen(false);
-    router.replace('/'); // back to index (auth flow)
+    router.replace('/(public)/home');
   };
 
   return (

@@ -1,13 +1,13 @@
 import { useNavigation } from '@react-navigation/native';
 import { useEffect, useRef } from 'react';
 import {
-  Animated,
-  Dimensions,
-  Image,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
+    Animated,
+    Dimensions,
+    Image,
+    ScrollView,
+    Text,
+    TouchableOpacity,
+    View,
 } from 'react-native';
 
 const { width } = Dimensions.get('window');
