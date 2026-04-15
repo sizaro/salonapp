@@ -9,11 +9,7 @@ export default function Index() {
 
   useEffect(() => {
     setTimeout(() => {
-      if (user) {
-        router.replace('/(tabs)');
-      } else {
-        router.replace('/auth');
-      }
+      router.replace('/public/home');
     }, 2000);
   }, []);
 

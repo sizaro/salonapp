@@ -3,64 +3,89 @@ import { createContext, useEffect, useState } from 'react';
 
 export const AuthContext = createContext();
 
+const API_URL = 'http://192.168.1.104:5500';
+
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // 🔥 Load user from storage when app starts
+  // 🔥 Load stored auth on app start
   useEffect(() => {
-    const loadUser = async () => {
+    const loadAuth = async () => {
       try {
         const storedUser = await AsyncStorage.getItem('user');
+        const storedToken = await AsyncStorage.getItem('token');
 
-        if (storedUser) {
+        if (storedUser && storedToken) {
           setUser(JSON.parse(storedUser));
+          setToken(storedToken);
         }
-      } catch (error) {
-        console.log('Error loading user:', error);
+      } catch (err) {
+        console.log('Auth load error:', err);
       } finally {
         setLoading(false);
       }
     };
 
-    loadUser();
+    loadAuth();
   }, []);
 
-  // 🔐 Mock login
-  const login = async (emailOrPhone, password) => {
-    if (
-      (emailOrPhone === 'test@salon.com' ||
-        emailOrPhone === '0712345678') &&
-      password === '123456'
-    ) {
-      const userData = { emailOrPhone };
+  const login = async (email, password) => {
+  try {
+    const res = await fetch(`${API_URL}/api/mobile/auth/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
+    });
 
-      setUser(userData);
-      await AsyncStorage.setItem('user', JSON.stringify(userData));
+    const data = await res.json();
 
-      return true;
+    if (!res.ok) {
+      return { success: false, message: data?.message };
     }
-    return false;
-  };
 
-  // 🆕 Mock register
-  const register = async (emailOrPhone, password) => {
-    const userData = { emailOrPhone };
+    const { token: jwtToken, user: userData } = data;
 
     setUser(userData);
+    setToken(jwtToken);
+
     await AsyncStorage.setItem('user', JSON.stringify(userData));
+    await AsyncStorage.setItem('token', jwtToken);
 
-    return true;
-  };
+    return {
+      success: true,
+      user: userData,
+      token: jwtToken,
+    };
 
-  // 🚪 Logout
+  } catch (err) {
+    console.log('Login error:', err.message);
+    return { success: false, message: err.message };
+  }
+};
+
+  // 🚪 LOGOUT
   const logout = async () => {
     setUser(null);
-    await AsyncStorage.removeItem('user'); // CLEAR
+    setToken(null);
+
+    await AsyncStorage.removeItem('user');
+    await AsyncStorage.removeItem('token');
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, loading }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        token,
+        loading,
+        login,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useContext, useState } from 'react';
 import { Alert, Pressable, Text, TextInput, TouchableOpacity, View } from 'react-native';
@@ -11,30 +12,29 @@ export default function Header() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+ 
   const handleLogin = async () => {
-  try {
-    const user = await login(email, password);
+  const result = await login(email, password);
 
+  if (result.success) {
     setMenuOpen(false);
 
-    // ✅ ROLE-BASED REDIRECT
-    if (user.role === "owner") {
-      router.replace("/(owner)/dashboard");
-    } else if (user.role === "manager") {
-      router.replace("/(manager)/dashboard");
+    if (result.user.role === "owner") {
+      router.replace("/owner/dashboard");
+    } else if (result.user.role === "manager") {
+      router.replace("/manager/dashboard");
     } else {
-      router.replace("/(employee)/dashboard");
+      router.replace("/employee/dashboard");
     }
-
-  } catch (err) {
-    Alert.alert("Login Failed", "Invalid credentials");
+  } else {
+    Alert.alert("Login Failed", result.message || "Invalid credentials");
   }
 };
 
   const handleLogout = () => {
     logout();
     setMenuOpen(false);
-    router.replace('/(public)/home');
+    router.replace('/public/home');
   };
 
   return (
@@ -48,7 +48,7 @@ export default function Header() {
           backgroundColor: '#fff',
           borderBottomWidth: 1,
           borderBottomColor: '#ccc',
-          marginTop: 20,
+          marginTop: 30,
         }}
       >
         <View
@@ -67,8 +67,8 @@ export default function Header() {
 
           {/* Dots */}
           <TouchableOpacity onPress={() => setMenuOpen(!menuOpen)}>
-            <Text style={{ fontSize: 24 }}>⋮</Text>
-          </TouchableOpacity>
+  <Ionicons name="person-circle-outline" size={28} color="black" />
+</TouchableOpacity>
         </View>
       </View>
 
